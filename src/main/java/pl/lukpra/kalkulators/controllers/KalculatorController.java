@@ -22,7 +22,7 @@ public class KalculatorController {
 
     @RequestMapping(value = "/countryCode/{countryCode}/tax")
     public CountryTaxPayload getCountryTaxRate(
-            @PathVariable(name = "countryCoude") String countryCode
+            @PathVariable(name = "countryCode") String countryCode
     ) {
         return kalkulatorService.getTaxByCountryCode(countryCode);
     }
@@ -65,9 +65,6 @@ public class KalculatorController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    /*
-        TODO: Move request countryCode to url
-     */
     @RequestMapping(value = "/calculate", method = RequestMethod.GET)
     public SalaryPayload calculateSalary(
             @RequestParam(name = "countryCode") String countryCode,

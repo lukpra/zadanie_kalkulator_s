@@ -7,7 +7,6 @@ public class CurrencyRate {
     private Double mid;
 
     public CurrencyRate() {
-
     }
 
     public CurrencyRate(String no, String effectiveDate, Double mid) {

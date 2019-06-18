@@ -9,7 +9,8 @@ public class TableResponsePayload {
     private String code;
     private List<CurrencyRate> rates;
 
-    public TableResponsePayload() {}
+    public TableResponsePayload() {
+    }
 
     public TableResponsePayload(String table, String currency, String code, List<CurrencyRate> rates) {
         this.table = table;

@@ -6,7 +6,8 @@ public class SalaryPayload {
     private String country;
     private String dailyWage;
 
-    public SalaryPayload() {}
+    public SalaryPayload() {
+    }
 
     public SalaryPayload(String netto, String country, String dailyWage) {
         this.netto = netto;

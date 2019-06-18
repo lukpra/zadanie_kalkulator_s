@@ -10,7 +10,7 @@ import java.util.Objects;
 public class CountryTaxAssembler {
 
     public CountryTaxPayload assemblyFromEntity(CountryEntity countryEntity) {
-        if(Objects.isNull(countryEntity))
+        if (Objects.isNull(countryEntity))
             return null;
 
         return new CountryTaxPayload(

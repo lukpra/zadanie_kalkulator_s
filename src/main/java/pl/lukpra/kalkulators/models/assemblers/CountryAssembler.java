@@ -10,7 +10,7 @@ import java.util.Objects;
 public class CountryAssembler {
 
     public CountryEntity assemblyFromPayload(CountryPayload countryPayload) {
-        if(Objects.isNull(countryPayload))
+        if (Objects.isNull(countryPayload))
             return null;
 
         CountryEntity newCountryEntity = new CountryEntity();
@@ -24,14 +24,14 @@ public class CountryAssembler {
     }
 
     public CountryPayload assemblyFromEntity(CountryEntity countryEntity) {
-       if(Objects.isNull(countryEntity))
-           return null;
+        if (Objects.isNull(countryEntity))
+            return null;
 
-       return new CountryPayload(
-               countryEntity.getCountryCode(),
-               countryEntity.getCurrencyCode(),
-               countryEntity.getTaxRate(),
-               countryEntity.getTaxFlatRate()
-       );
+        return new CountryPayload(
+                countryEntity.getCountryCode(),
+                countryEntity.getCurrencyCode(),
+                countryEntity.getTaxRate(),
+                countryEntity.getTaxFlatRate()
+        );
     }
 }

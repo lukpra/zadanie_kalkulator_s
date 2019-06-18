@@ -20,14 +20,14 @@ public class NbpServiceTest {
     @Test
     public void shouldGetCurrentCoversionRate() {
         // Given
-        String germanyCountryCode = CountryFactory.COUNTRY_2_CURRENCY_CODE;
+        String germanyCountryCode = CountryFactory.GERMANY_CURRENCY_CODE;
 
         // When
-        TableResponsePayload currencyRatesForCountryCode = nbpService.getCurrencyRatesForCountryCode(germanyCountryCode);
+        TableResponsePayload currencyRatesForCountryCode = nbpService.getCurrencyRatesForCurrencyCode(germanyCountryCode);
 
         // Then
         Assert.assertNotNull(currencyRatesForCountryCode);
-        Assert.assertEquals(CountryFactory.COUNTRY_2_CURRENCY_CODE, currencyRatesForCountryCode.getCode());
+        Assert.assertEquals(CountryFactory.GERMANY_CURRENCY_CODE, currencyRatesForCountryCode.getCode());
     }
 
 }

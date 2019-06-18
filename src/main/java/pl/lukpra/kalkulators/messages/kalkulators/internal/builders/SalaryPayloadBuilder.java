@@ -1,4 +1,6 @@
-package pl.lukpra.kalkulators.messages.kalkulators.internal;
+package pl.lukpra.kalkulators.messages.kalkulators.internal.builders;
+
+import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayload;
 
 public class SalaryPayloadBuilder {
 

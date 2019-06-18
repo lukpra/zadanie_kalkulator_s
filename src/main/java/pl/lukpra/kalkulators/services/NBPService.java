@@ -19,6 +19,6 @@ public interface NBPService {
             value = "exchangerates/rates/" + TABLE_WITH_MOST_POPULAR_CURRENCIES + "/{currency_code}/",
             params = RESPONSE_IN_JSON
     )
-    TableResponsePayload getCurrencyRatesForCountryCode(@PathVariable("currency_code") String currencyCode);
+    TableResponsePayload getCurrencyRatesForCurrencyCode(@PathVariable("currency_code") String currencyCode);
 
 }

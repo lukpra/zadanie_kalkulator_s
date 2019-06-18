@@ -6,7 +6,7 @@ import pl.lukpra.kalkulators.messages.kalkulators.external.nbp.TableResponsePayl
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryPayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryTaxPayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayload;
-import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayloadBuilder;
+import pl.lukpra.kalkulators.messages.kalkulators.internal.builders.SalaryPayloadBuilder;
 import pl.lukpra.kalkulators.models.assemblers.CountryAssembler;
 import pl.lukpra.kalkulators.models.assemblers.CountryTaxAssembler;
 import pl.lukpra.kalkulators.models.entity.CountryEntity;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @Component
 public class KalkulatorServiceImpl implements KalkulatorService {
 
-    public final static Integer AVERAGE_AMOUNT_OF_WORKING_DAYS_IN_MONTH = 22;
-    public final static String SERVICE_LOCATION_CURRENCY = "PLN";
-    public final static int SALARY_CALCULATION_PRECISION = 2;
+    private final static Integer AVERAGE_AMOUNT_OF_WORKING_DAYS_IN_MONTH = 22;
+    private final static String SERVICE_LOCATION_CURRENCY = "PLN";
+    private final static int SALARY_CALCULATION_PRECISION = 2;
 
     @Autowired
     private NBPService nbpService;
@@ -99,10 +99,11 @@ public class KalkulatorServiceImpl implements KalkulatorService {
         double salaryWithoutTaxes = dailyWage * AVERAGE_AMOUNT_OF_WORKING_DAYS_IN_MONTH;
 
         if (!matchingCountry.getCurrencyCode().equals(SERVICE_LOCATION_CURRENCY)) { // Currency conversion is required
-            TableResponsePayload currencyRates = nbpService.getCurrencyRatesForCountryCode(matchingCountry.getCurrencyCode());
+            TableResponsePayload currencyRates = nbpService.getCurrencyRatesForCurrencyCode(matchingCountry.getCurrencyCode());
             Double currencyConversionRate = currencyRates.getRates().stream()
-                    .findFirst().get()
-                    .getMid();
+                    .findFirst().map(rate -> rate.getMid())
+                    .orElseThrow(() -> new IllegalStateException("No conversion rates were returned by currency service!"));
+
             salaryWithoutTaxes = salaryWithoutTaxes / currencyConversionRate;
         }
 
@@ -124,10 +125,10 @@ public class KalkulatorServiceImpl implements KalkulatorService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Country with code: %s was not found!", countryCode)));
     }
 
-    private Double calculateTaxesToPay(double salaryWithoutTaxes, Integer countryTaxFlatRate, Integer countryTaxPrecentage) {
+    private Double calculateTaxesToPay(double salaryWithoutTaxes, Integer countryTaxFlatRate, Integer countryTaxPercentage) {
         double salaryAfterFlatRate = salaryWithoutTaxes - countryTaxFlatRate;
 
-        double taxPercentage = calculateTaxPercentage(salaryAfterFlatRate, countryTaxPrecentage);
+        double taxPercentage = calculateTaxPercentage(salaryAfterFlatRate, countryTaxPercentage);
 
         return taxPercentage + countryTaxFlatRate;
     }
