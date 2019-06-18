@@ -127,12 +127,12 @@ public class KalkulatorServiceImpl implements KalkulatorService {
     private Double calculateTaxesToPay(double salaryWithoutTaxes, Integer countryTaxFlatRate, Integer countryTaxPrecentage) {
         double salaryAfterFlatRate = salaryWithoutTaxes - countryTaxFlatRate;
 
-        double taxPrecentage = calculateTaxPercentage(salaryAfterFlatRate, countryTaxPrecentage);
+        double taxPercentage = calculateTaxPercentage(salaryAfterFlatRate, countryTaxPrecentage);
 
-        return taxPrecentage + countryTaxFlatRate;
+        return taxPercentage + countryTaxFlatRate;
     }
 
     private Double calculateTaxPercentage(double salary, Integer taxPercentage) {
-        return (double) ((salary * taxPercentage) / 100);
+        return (salary * taxPercentage) / 100;
     }
 }

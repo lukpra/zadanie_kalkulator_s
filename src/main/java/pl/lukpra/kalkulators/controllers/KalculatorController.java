@@ -62,7 +62,7 @@ public class KalculatorController {
     ) {
         kalkulatorService.deleteCountry(countryPayload);
 
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /*

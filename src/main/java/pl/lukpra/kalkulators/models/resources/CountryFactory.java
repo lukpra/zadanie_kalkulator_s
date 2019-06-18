@@ -5,6 +5,9 @@ import pl.lukpra.kalkulators.models.entity.CountryEntity;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+    Should be present in test however class is used for database population on startup.
+ */
 public class CountryFactory {
 
     public static final String  COUNTRY_1_CODE = "PL";

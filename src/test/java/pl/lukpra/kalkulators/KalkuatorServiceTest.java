@@ -20,6 +20,8 @@ import pl.lukpra.kalkulators.services.KalkulatorService;
 @SpringBootTest
 public class KalkuatorServiceTest {
 
+    // TODO: Mock NBPService and test calculation function
+
     @Autowired
     private KalkulatorService kalkulatorService;
 
