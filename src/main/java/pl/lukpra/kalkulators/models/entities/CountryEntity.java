@@ -1,4 +1,4 @@
-package pl.lukpra.kalkulators.models.entity;
+package pl.lukpra.kalkulators.models.entities;
 
 import javax.persistence.*;
 

@@ -1,6 +1,6 @@
 package pl.lukpra.kalkulators.models.resources;
 
-import pl.lukpra.kalkulators.models.entity.CountryEntity;
+import pl.lukpra.kalkulators.models.entities.CountryEntity;
 
 import java.util.Arrays;
 import java.util.List;

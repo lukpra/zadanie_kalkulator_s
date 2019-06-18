@@ -2,7 +2,7 @@ package pl.lukpra.kalkulators.models.assemblers;
 
 import org.springframework.stereotype.Component;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryTaxPayload;
-import pl.lukpra.kalkulators.models.entity.CountryEntity;
+import pl.lukpra.kalkulators.models.entities.CountryEntity;
 
 import java.util.Objects;
 

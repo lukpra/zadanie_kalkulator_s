@@ -2,6 +2,7 @@ package pl.lukpra.kalkulators.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.lukpra.kalkulators.messages.kalkulators.external.nbp.CurrencyRate;
 import pl.lukpra.kalkulators.messages.kalkulators.external.nbp.TableResponsePayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryPayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryTaxPayload;
@@ -9,7 +10,7 @@ import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.builders.SalaryPayloadBuilder;
 import pl.lukpra.kalkulators.models.assemblers.CountryAssembler;
 import pl.lukpra.kalkulators.models.assemblers.CountryTaxAssembler;
-import pl.lukpra.kalkulators.models.entity.CountryEntity;
+import pl.lukpra.kalkulators.models.entities.CountryEntity;
 import pl.lukpra.kalkulators.models.repository.CountryRepository;
 import pl.lukpra.kalkulators.services.KalkulatorService;
 import pl.lukpra.kalkulators.services.NBPService;
@@ -101,7 +102,7 @@ public class KalkulatorServiceImpl implements KalkulatorService {
         if (!matchingCountry.getCurrencyCode().equals(SERVICE_LOCATION_CURRENCY)) { // Currency conversion is required
             TableResponsePayload currencyRates = nbpService.getCurrencyRatesForCurrencyCode(matchingCountry.getCurrencyCode());
             Double currencyConversionRate = currencyRates.getRates().stream()
-                    .findFirst().map(rate -> rate.getMid())
+                    .findFirst().map(CurrencyRate::getMid)
                     .orElseThrow(() -> new IllegalStateException("No conversion rates were returned by currency service!"));
 
             salaryWithoutTaxes = salaryWithoutTaxes / currencyConversionRate;
@@ -120,7 +121,7 @@ public class KalkulatorServiceImpl implements KalkulatorService {
         );
     }
 
-    public CountryEntity findCountryByCountryCode(String countryCode) {
+    private CountryEntity findCountryByCountryCode(String countryCode) {
         return countryRepository.findByCountryCode(countryCode.toUpperCase())
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Country with code: %s was not found!", countryCode)));
     }

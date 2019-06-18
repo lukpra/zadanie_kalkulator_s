@@ -1,7 +1,7 @@
 package pl.lukpra.kalkulators.models.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.lukpra.kalkulators.models.entity.CountryEntity;
+import pl.lukpra.kalkulators.models.entities.CountryEntity;
 
 import java.util.Optional;
 

@@ -9,7 +9,7 @@ import pl.lukpra.kalkulators.models.repository.CountryRepository;
 import pl.lukpra.kalkulators.models.resources.CountryFactory;
 
 @Component
-@Profile("!demo")
+@Profile("demo")
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
