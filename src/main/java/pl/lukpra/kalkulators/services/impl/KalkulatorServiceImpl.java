@@ -2,19 +2,32 @@ package pl.lukpra.kalkulators.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.lukpra.kalkulators.messages.kalkulators.external.nbp.TableResponsePayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryPayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryTaxPayload;
+import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayload;
+import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayloadBuilder;
 import pl.lukpra.kalkulators.models.assemblers.CountryAssembler;
 import pl.lukpra.kalkulators.models.assemblers.CountryTaxAssembler;
 import pl.lukpra.kalkulators.models.entity.CountryEntity;
 import pl.lukpra.kalkulators.models.repository.CountryRepository;
 import pl.lukpra.kalkulators.services.KalkulatorService;
+import pl.lukpra.kalkulators.services.NBPService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class KalkulatorServiceImpl implements KalkulatorService {
+
+    public final static Integer AVERAGE_AMOUNT_OF_WORKING_DAYS_IN_MONTH = 22;
+    public final static String SERVICE_LOCATION_CURRENCY = "PLN";
+    public final static int SALARY_CALCULATION_PRECISION = 2;
+
+    @Autowired
+    private NBPService nbpService;
 
     @Autowired
     private CountryRepository countryRepository;
@@ -43,7 +56,7 @@ public class KalkulatorServiceImpl implements KalkulatorService {
     public CountryPayload createCountry(CountryPayload countryPayload) {
         Boolean doesGivenCountryExistsAlready = countryRepository.existsByCountryCode(countryPayload.getCountryCode());
 
-        if(doesGivenCountryExistsAlready)
+        if (doesGivenCountryExistsAlready)
             throw new IllegalStateException(String.format("Country with given code: %s already exists!", countryPayload.getCountryCode()));
 
         CountryEntity countryEntity = countryAssembler.assemblyFromPayload(countryPayload);
@@ -77,13 +90,49 @@ public class KalkulatorServiceImpl implements KalkulatorService {
     }
 
     @Override
-    public Integer calculateSalary() {
+    public SalaryPayload calculateSalary(String countryCode, Integer dailyWage) {
+        CountryEntity matchingCountry = findCountryByCountryCode(countryCode);
 
-       return 0;
+        if (dailyWage <= 0)
+            throw new IllegalArgumentException("Salary cannot be lower or equal zero!");
+
+        double salaryWithoutTaxes = dailyWage * AVERAGE_AMOUNT_OF_WORKING_DAYS_IN_MONTH;
+
+        if (!matchingCountry.getCurrencyCode().equals(SERVICE_LOCATION_CURRENCY)) { // Currency conversion is required
+            TableResponsePayload currencyRates = nbpService.getCurrencyRatesForCountryCode(matchingCountry.getCurrencyCode());
+            Double currencyConversionRate = currencyRates.getRates().stream()
+                    .findFirst().get()
+                    .getMid();
+            salaryWithoutTaxes = salaryWithoutTaxes / currencyConversionRate;
+        }
+
+        double taxesToSubtract = calculateTaxesToPay(salaryWithoutTaxes, matchingCountry.getTaxFlatRate(), matchingCountry.getTaxRate());
+        double nettoSalary = salaryWithoutTaxes - taxesToSubtract;
+
+        return SalaryPayloadBuilder.build(
+                BigDecimal.valueOf(nettoSalary)
+                        .setScale(SALARY_CALCULATION_PRECISION, RoundingMode.HALF_UP)
+                        .doubleValue(),
+                dailyWage,
+                matchingCountry.getCurrencyCode(),
+                matchingCountry.getCountryCode()
+        );
     }
 
     public CountryEntity findCountryByCountryCode(String countryCode) {
-        return countryRepository.findByCountryCode(countryCode)
+        return countryRepository.findByCountryCode(countryCode.toUpperCase())
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Country with code: %s was not found!", countryCode)));
+    }
+
+    private Double calculateTaxesToPay(double salaryWithoutTaxes, Integer countryTaxFlatRate, Integer countryTaxPrecentage) {
+        double salaryAfterFlatRate = salaryWithoutTaxes - countryTaxFlatRate;
+
+        double taxPrecentage = calculateTaxPercentage(salaryAfterFlatRate, countryTaxPrecentage);
+
+        return taxPrecentage + countryTaxFlatRate;
+    }
+
+    private Double calculateTaxPercentage(double salary, Integer taxPercentage) {
+        return (double) ((salary * taxPercentage) / 100);
     }
 }

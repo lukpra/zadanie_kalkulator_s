@@ -16,7 +16,7 @@ public interface NBPService {
     String TABLE_WITH_MOST_POPULAR_CURRENCIES = "A";
 
     @RequestMapping(method = RequestMethod.GET,
-            value = "exchangerates/rates/" + TABLE_WITH_MOST_POPULAR_CURRENCIES + "/{currency_code}/today/",
+            value = "exchangerates/rates/" + TABLE_WITH_MOST_POPULAR_CURRENCIES + "/{currency_code}/",
             params = RESPONSE_IN_JSON
     )
     TableResponsePayload getCurrencyRatesForCountryCode(@PathVariable("currency_code") String currencyCode);

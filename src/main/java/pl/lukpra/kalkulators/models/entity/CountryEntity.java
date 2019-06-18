@@ -9,7 +9,7 @@ public class CountryEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "country_code")
+    @Column(name = "country_code", unique = true)
     private String countryCode; // ISO 3166
 
     @Column(name = "currency_code")

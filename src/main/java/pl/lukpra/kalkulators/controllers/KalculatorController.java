@@ -7,11 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryPayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryTaxPayload;
+import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayload;
 import pl.lukpra.kalkulators.services.KalkulatorService;
 
 import java.util.List;
 
-@RestController("/salary")
+@RestController
+@RequestMapping(value = "/salary")
+@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600) // This should be on proxy
 public class KalculatorController {
 
     @Autowired
@@ -62,13 +65,15 @@ public class KalculatorController {
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
-
-    @RequestMapping(value = "/countryCode/{countryCode}/calculate/", method = RequestMethod.GET)
-    public String calculateSalary(
-            @PathVariable(name = "countryCode") String countryCode,
-            @RequestParam(name = "salary") Integer salary
+    /*
+        TODO: Move request countryCode to url
+     */
+    @RequestMapping(value = "/calculate", method = RequestMethod.GET)
+    public SalaryPayload calculateSalary(
+            @RequestParam(name = "countryCode") String countryCode,
+            @RequestParam(name = "dailyWage") Integer dailyWage
     ) {
-        return "index - todo zwroc frontend";
+        return kalkulatorService.calculateSalary(countryCode, dailyWage);
     }
 
 }

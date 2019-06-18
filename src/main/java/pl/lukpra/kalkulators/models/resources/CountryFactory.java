@@ -1,4 +1,4 @@
-package pl.lukpra.kalkulators.resources;
+package pl.lukpra.kalkulators.models.resources;
 
 import pl.lukpra.kalkulators.models.entity.CountryEntity;
 

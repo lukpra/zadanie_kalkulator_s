@@ -13,7 +13,7 @@ import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryTaxPayload;
 import pl.lukpra.kalkulators.models.assemblers.CountryTaxAssembler;
 import pl.lukpra.kalkulators.models.entity.CountryEntity;
 import pl.lukpra.kalkulators.models.repository.CountryRepository;
-import pl.lukpra.kalkulators.resources.CountryFactory;
+import pl.lukpra.kalkulators.models.resources.CountryFactory;
 import pl.lukpra.kalkulators.services.KalkulatorService;
 
 @RunWith(SpringRunner.class)
@@ -29,15 +29,15 @@ public class KalkuatorServiceTest {
     @Autowired
     private CountryTaxAssembler countryTaxAssembler;
 
-    @Before()
-    public void setUp() {
-        countryRepository.saveAll(CountryFactory.createDefaultCountries());
-    }
-
-    @After()
-    public void cleanUp() {
-        countryRepository.deleteAll();
-    }
+//    @Before()
+//    public void setUp() {
+//        countryRepository.saveAll(CountryFactory.createDefaultCountries());
+//    }
+//
+//    @After()
+//    public void cleanUp() {
+//        countryRepository.deleteAll();
+//    }
 
     @Test
     public void shouldGetCountryTaxByCountryCode() {
@@ -46,6 +46,19 @@ public class KalkuatorServiceTest {
 
         // When
         CountryTaxPayload actualCountry = kalkulatorService.getTaxByCountryCode(expectedCountry.getCountryCode());
+
+        // Then
+        Assert.assertEquals(expectedCountry.getTaxFlatRate(), actualCountry.getTaxFlatRate());
+        Assert.assertEquals(expectedCountry.getTaxRate(), actualCountry.getTaxRate());
+    }
+
+    @Test
+    public void shouldGetCountryTaxByCountryCodeInLowerCase() {
+        // Given
+        CountryEntity expectedCountry = CountryFactory.createPolandEntity();
+
+        // When
+        CountryTaxPayload actualCountry = kalkulatorService.getTaxByCountryCode(expectedCountry.getCountryCode().toLowerCase());
 
         // Then
         Assert.assertEquals(expectedCountry.getTaxFlatRate(), actualCountry.getTaxFlatRate());

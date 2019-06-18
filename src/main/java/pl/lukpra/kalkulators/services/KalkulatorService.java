@@ -3,6 +3,7 @@ package pl.lukpra.kalkulators.services;
 import org.springframework.stereotype.Service;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryPayload;
 import pl.lukpra.kalkulators.messages.kalkulators.internal.CountryTaxPayload;
+import pl.lukpra.kalkulators.messages.kalkulators.internal.SalaryPayload;
 
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface KalkulatorService {
     void deleteCountry(CountryPayload countryPayload);
 
     List<CountryPayload> getAllCountries();
+
+    SalaryPayload calculateSalary(String countryCode, Integer dailyWage);
+
 }
